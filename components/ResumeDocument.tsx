@@ -102,7 +102,7 @@ const ResumeDocument = () => (
                 <View style={styles.contact}>
                     <Text>contact@sabiha.dev</Text>
                     <Text>|</Text>
-                    <Text>github.com/sabiha-dev</Text>
+                    <Text>github.com/sabiha-iqbal</Text>
                     <Text>|</Text>
                     <Text>linkedin.com/in/sabiha</Text>
                 </View>

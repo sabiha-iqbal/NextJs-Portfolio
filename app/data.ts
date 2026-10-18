@@ -1,3 +1,30 @@
+export const heroData = {
+    name: "Sabiha Malik",
+    roles: [
+        "Full-Stack Developer",
+        "Game Developer",
+        "AI Automation Specialist",
+        "WordPress Expert"
+    ],
+    paragraph: "I build performant web applications, interactive games, and AI-driven experiences with a passion for clean code and innovative design.",
+    stats: [
+        { number: "10+", label: "Projects" },
+        { number: "2+", label: "Years" },
+        { number: "100%", label: "Passion" },
+    ]
+};
+
+export const aboutData = {
+    title: "About Me",
+    paragraph: "I'm a passionate full-stack developer building interactive experiences, games, and AI-driven applications. I combine creativity with solid engineering to deliver delightful products.",
+    description: "With professional experience across web and game projects, I specialize in building scalable web applications, indie games, and AI-integrated solutions. I focus on craftsmanship and user experience.",
+    interests: [
+        { name: "Full-Stack Web", icon: "💻" },
+        { name: "Game Dev", icon: "🎮" },
+        { name: "AI & ML", icon: "🤖" },
+        { name: "Open Source", icon: "🌐" }
+    ]
+};
 
 export const timeline = [
     {
@@ -156,4 +183,158 @@ export const services = [
         description: "Refactoring, bug fixing, and feature enhancements for existing applications to improve performance and usability.",
         tools: ["Refactoring", "Fixes", "Updates"]
     }
+];
+
+export const codeSnippets = [
+    {
+        language: "TypeScript",
+        filename: "portfolio.tsx",
+        code: `import { motion } from "framer-motion";
+
+const Portfolio = () => {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="portfolio"
+    >
+      <h1>Welcome to my portfolio!</h1>
+    </motion.div>
+  );
+};`,
+    },
+    {
+        language: "Python",
+        filename: "ai_model.py",
+        code: `import tensorflow as tf
+
+class AIModel:
+    def __init__(self, layers):
+        self.model = tf.keras.Sequential(layers)
+    
+    def train(self, data, epochs=10):
+        self.model.compile(
+            optimizer='adam',
+            loss='categorical_crossentropy'
+        )
+        return self.model.fit(data, epochs=epochs)`,
+    },
+    {
+        language: "JavaScript",
+        filename: "game.js",
+        code: `class GameEngine {
+  constructor(canvas) {
+    this.ctx = canvas.getContext('2d');
+    this.entities = [];
+    this.running = false;
+  }
+  
+  update(deltaTime) {
+    this.entities.forEach(entity => {
+      entity.update(deltaTime);
+    });
+  }
+  
+  render() {
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.entities.forEach(e => e.render(this.ctx));
+  }
+}`,
+    }
+];
+
+export const contactInfo = [
+    { name: "Email", value: "contact@sabiha.dev", icon: "📧", link: "mailto:contact@sabiha.dev" },
+    { name: "GitHub", value: "@sabiha-iqbal", icon: "💻", link: "https://github.com/sabiha-iqbal" },
+    { name: "LinkedIn", value: "Sabiha Malik", icon: "💼", link: "https://linkedin.com" },
+    { name: "Twitter", value: "@sabiha_tech", icon: "🐦", link: "https://twitter.com" }
+];
+
+export const availabilityData = [
+    {
+        icon: "📍",
+        title: "Location",
+        value: "Remote / Worldwide",
+        subtext: "Open to global opportunities"
+    },
+    {
+        icon: "💼",
+        title: "Status",
+        value: "Available for Hire",
+        subtext: "Full-time & contract roles"
+    },
+    {
+        icon: "⚡",
+        title: "Response Time",
+        value: "Within 24 Hours",
+        subtext: "Mon - Fri, 9am - 6pm UTC"
+    }
+];
+
+export const defaultThemes = [
+    {
+        name: "Dark Theme",
+        variables: {
+            bg_primary: "#000000",
+            bg_card: "rgba(10, 10, 10, 0.8)",
+            bg_nav: "rgba(0, 0, 0, 0.95)",
+            text_primary: "#ffffff",
+            accent_cyan: "#22d3ee",
+            accent_blue: "#3b82f6",
+            background: "#000000",
+            foreground: "#ffffff",
+        },
+    },
+    {
+        name: "Cyberpunk",
+        variables: {
+            bg_primary: "#0f051d",
+            bg_card: "rgba(25, 10, 45, 0.85)",
+            bg_nav: "rgba(15, 5, 29, 0.95)",
+            text_primary: "#f8fafc",
+            accent_cyan: "#06b6d4",
+            accent_blue: "#ec4899",
+            background: "#0f051d",
+            foreground: "#f8fafc",
+        },
+    },
+    {
+        name: "Midnight",
+        variables: {
+            bg_primary: "#030712",
+            bg_card: "rgba(17, 24, 39, 0.85)",
+            bg_nav: "rgba(3, 7, 18, 0.95)",
+            text_primary: "#f9fafb",
+            accent_cyan: "#38bdf8",
+            accent_blue: "#6366f1",
+            background: "#030712",
+            foreground: "#f9fafb",
+        },
+    },
+    {
+        name: "Matrix",
+        variables: {
+            bg_primary: "#020d06",
+            bg_card: "rgba(5, 25, 12, 0.85)",
+            bg_nav: "rgba(2, 13, 6, 0.95)",
+            text_primary: "#f0fdf4",
+            accent_cyan: "#22c55e",
+            accent_blue: "#10b981",
+            background: "#020d06",
+            foreground: "#f0fdf4",
+        },
+    },
+    {
+        name: "Ocean",
+        variables: {
+            bg_primary: "#02121e",
+            bg_card: "rgba(6, 32, 54, 0.85)",
+            bg_nav: "rgba(2, 18, 30, 0.95)",
+            text_primary: "#f0f9ff",
+            accent_cyan: "#38bdf8",
+            accent_blue: "#0284c7",
+            background: "#02121e",
+            foreground: "#f0f9ff",
+        },
+    },
 ];

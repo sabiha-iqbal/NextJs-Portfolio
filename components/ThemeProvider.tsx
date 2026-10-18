@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react";
 
+import { defaultThemes } from "@/app/data";
+
 export interface ThemeVariables {
     bg_primary: string;
     bg_card: string;
@@ -30,7 +32,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
     const [currentTheme, setCurrentTheme] = useState<string>("Dark Theme");
-    const [availableThemes, setAvailableThemes] = useState<Theme[]>([]);
+    const [availableThemes, setAvailableThemes] = useState<Theme[]>(defaultThemes);
     const [mounted, setMounted] = useState(false);
 
     const hexToRgb = (hex: string) => {

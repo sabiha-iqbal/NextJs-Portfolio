@@ -4,20 +4,24 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import CodeEditor from "@/components/CodeEditor";
 import Typewriter from "@/components/Typewriter";
-import { timeline, achievements, projects, skillCategories, services } from "./data";
+import {
+  timeline,
+  achievements,
+  projects,
+  skillCategories,
+  services,
+  heroData,
+  aboutData,
+  codeSnippets,
+  contactInfo,
+} from "./data";
 import ResumeDownloadButton from "@/components/ResumeDownloadButton";
-import { fetchPortfolioData, type PortfolioData } from "@/lib/api";
 import { useTheme } from "@/components/ThemeProvider";
 import NodeNetwork from "@/components/NodeNetwork";
 import Navbar from "@/components/Navbar";
 
 export default function Home() {
-  const { applyThemeVariables, setAvailableThemes } = useTheme();
-
-  // API Data State
-  const [apiData, setApiData] = useState<PortfolioData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [apiError, setApiError] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -29,41 +33,11 @@ export default function Home() {
   const [activeSkillCategory, setActiveSkillCategory] = useState("All");
   const [activeServiceIndex, setActiveServiceIndex] = useState(0);
 
-  // Fetch data from API on mount
+  // Smooth initial loading screen transition
   useEffect(() => {
-    async function loadData() {
-      setIsLoading(true);
-      const data = await fetchPortfolioData();
-
-      if (data) {
-        setApiData(data);
-        setApiError(false);
-
-        // Populate available themes in provider
-        if (data.themes_section?.available_themes) {
-          setAvailableThemes(data.themes_section.available_themes);
-        }
-
-        // Apply initial theme from API ONLY if no user preference exists
-        const savedThemeName = localStorage.getItem("selected-theme");
-        if (!savedThemeName) {
-          const currentThemeName = data.themes_section?.current_theme;
-          const theme = data.themes_section?.available_themes.find((t: any) => t.name === currentThemeName);
-          if (theme) {
-            applyThemeVariables(theme.variables);
-          }
-        }
-      } else {
-        setApiError(true);
-        console.warn('Failed to fetch API data, using static fallback');
-      }
-
-      // Simulate a slightly longer load for the node animation to be seen
-      setTimeout(() => setIsLoading(false), 2000);
-    }
-
-    loadData();
-  }, [applyThemeVariables, setAvailableThemes]);
+    const timer = setTimeout(() => setIsLoading(false), 400);
+    return () => clearTimeout(timer);
+  }, []);
 
   const containerVariants: any = {
     hidden: { opacity: 0 },
@@ -85,28 +59,20 @@ export default function Home() {
     },
   };
 
-  // Data imported from ./data.ts (fallback)
-  // Use API data if available, otherwise use static data
-  const dynamicProjects = apiData?.projects_section?.projects || projects;
-  const dynamicServices = apiData?.services_section?.services || services;
-  const dynamicSkills = apiData?.skills_section?.skill_categories || skillCategories;
-  const dynamicTimeline = apiData?.timeline_section?.experiences || timeline;
-  const dynamicAchievements = apiData?.achievements_section?.achievements || achievements;
-
   const filteredProjects = activeProjectCategory === "All"
-    ? dynamicProjects
-    : dynamicProjects.filter(p => p.category.includes(activeProjectCategory) || p.category === activeProjectCategory);
+    ? projects
+    : projects.filter(p => p.category.includes(activeProjectCategory) || p.category === activeProjectCategory);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveServiceIndex((prev) => (prev + 1) % dynamicServices.length);
+      setActiveServiceIndex((prev) => (prev + 1) % services.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [dynamicServices.length]);
+  }, []);
 
   const filteredSkills = activeSkillCategory === "All"
-    ? dynamicSkills
-    : dynamicSkills.filter(s => s.name === activeSkillCategory);
+    ? skillCategories
+    : skillCategories.filter(s => s.name === activeSkillCategory);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -217,13 +183,13 @@ export default function Home() {
                   textShadow: "0 0 10px rgba(34, 211, 238, 0.25)",
                 }}
               >
-                <span className="text-white">Hi! I'm {apiData?.hero_section?.name || "Sabiha Malik"}</span>
+                <span className="text-white">Hi! I'm {heroData.name}</span>
               </motion.h1>
 
               {/* Role/Title */}
               <div className="h-10 sm:h-12 mb-3 sm:mb-4">
                 <Typewriter
-                  words={apiData?.hero_section?.role || ["Full-Stack Developer", "Game Developer", "AI Automation Specialist", "WordPress Expert"]}
+                  words={heroData.roles}
                   className="text-xl sm:text-2xl md:text-3xl text-white/90 terminal-heading bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500"
                 />
               </div>
@@ -233,7 +199,7 @@ export default function Home() {
                 variants={itemVariants}
                 className="text-base sm:text-lg md:text-xl text-white/80 mb-8 sm:mb-10 max-w-2xl terminal-heading px-1"
               >
-                {apiData?.hero_section?.paragraph || "I build performant web applications, interactive games, and AI-driven experiences with a passion for clean code and innovative design."}
+                {heroData.paragraph}
               </motion.p>
 
               {/* Stats */}
@@ -241,11 +207,7 @@ export default function Home() {
                 variants={itemVariants}
                 className="grid grid-cols-3 gap-4 mb-10 w-full max-w-md"
               >
-                {(apiData?.hero_section?.stats || [
-                  { number: "10+", label: "Projects" },
-                  { number: "2+", label: "Years" },
-                  { number: "100%", label: "Passion" },
-                ]).map((stat, i) => (
+                {heroData.stats.map((stat, i) => (
                   <div key={i} className="text-left">
                     <div className="text-2xl sm:text-3xl font-bold mb-1" style={{ color: "var(--accent-cyan)" }}>
                       {stat.number}
@@ -293,67 +255,9 @@ export default function Home() {
             <motion.div variants={itemVariants} className="w-full mt-8 lg:mt-0 flex justify-center lg:justify-center">
               <div className="w-full max-w-xl">
                 <h2 className="text-2xl font-bold text-white mb-4 terminal-heading neon-glow text-left">
-                  {apiData?.code_editor_section?.title || "Code Showcase"}
+                  Code Showcase
                 </h2>
-                <CodeEditor
-                  snippets={apiData?.code_editor_section?.snippets || [
-                    {
-                      language: "TypeScript",
-                      filename: "portfolio.tsx",
-                      code: `import { motion } from "framer-motion";
-
-const Portfolio = () => {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="portfolio"
-    >
-      <h1>Welcome to my portfolio!</h1>
-    </motion.div>
-  );
-};`,
-                    },
-                    {
-                      language: "Python",
-                      filename: "ai_model.py",
-                      code: `import tensorflow as tf
-
-class AIModel:
-    def __init__(self, layers):
-        self.model = tf.keras.Sequential(layers)
-    
-    def train(self, data, epochs=10):
-        self.model.compile(
-            optimizer='adam',
-            loss='categorical_crossentropy'
-        )
-        return self.model.fit(data, epochs=epochs)`,
-                    },
-                    {
-                      language: "JavaScript",
-                      filename: "game.js",
-                      code: `class GameEngine {
-  constructor(canvas) {
-    this.ctx = canvas.getContext('2d');
-    this.entities = [];
-    this.running = false;
-  }
-  
-  update(deltaTime) {
-    this.entities.forEach(entity => {
-      entity.update(deltaTime);
-    });
-  }
-  
-  render() {
-    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.entities.forEach(e => e.render(this.ctx));
-  }
-}`,
-                    }
-                  ]}
-                />
+                <CodeEditor snippets={codeSnippets} />
               </div>
             </motion.div>
           </div>
@@ -474,28 +378,23 @@ class AIModel:
         >
           <motion.div variants={itemVariants} className="text-center mb-12 corner-brackets">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-white terminal-heading neon-glow" style={{ textShadow: "0 0 18px rgba(34, 211, 238, 0.25)" }}>
-              {apiData?.about_section?.title || "About Me"}
+              {aboutData.title}
             </h2>
             <p className="text-white/80 max-w-2xl mx-auto terminal-heading">
-              {apiData?.about_section?.paragraph || "I'm a passionate full-stack developer building interactive experiences, games, and AI-driven applications. I combine creativity with solid engineering to deliver delightful products."}
+              {aboutData.paragraph}
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <motion.div variants={itemVariants} className="space-y-6">
               <p className="text-white/80 text-lg leading-relaxed terminal-heading whitespace-pre-line">
-                {apiData?.about_section?.description || `With professional experience across web and game projects, I specialize in building scalable web applications, indie games, and AI-integrated solutions. I focus on craftsmanship and user experience.`}
+                {aboutData.description}
               </p>
 
               <div className="pt-6">
                 <h3 className="text-xl font-bold text-white mb-4 terminal-heading">Interests</h3>
                 <div className="flex flex-wrap gap-3">
-                  {(apiData?.about_section.interests || [
-                    { name: "Full-Stack Web", icon: "💻" },
-                    { name: "Game Dev", icon: "🎮" },
-                    { name: "AI & ML", icon: "🤖" },
-                    { name: "Open Source", icon: "🌐" }
-                  ]).map((interest, i) => (
+                  {aboutData.interests.map((interest, i) => (
                     <motion.div
                       key={i}
                       whileHover={{ scale: 1.05, backgroundColor: "rgba(34, 211, 238, 0.15)" }}
@@ -596,7 +495,7 @@ class AIModel:
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-              {dynamicAchievements.map((achievement: any, i: number) => (
+              {achievements.map((achievement: any, i: number) => (
                 <motion.div
                   key={i}
                   variants={itemVariants}
@@ -890,12 +789,7 @@ class AIModel:
               <h3 className="text-2xl font-bold text-white mb-6 terminal-heading border-b border-white/10 pb-4">Connect With Me</h3>
 
               <div className="grid grid-cols-1 gap-4">
-                {(apiData?.contact_section?.contact_info || [
-                  { name: "Email", value: "contact@sabiha.dev", icon: "📧", link: "mailto:contact@sabiha.dev" },
-                  { name: "GitHub", value: "@sabiha-dev", icon: "💻", link: "https://github.com" },
-                  { name: "LinkedIn", value: "Sabiha Malik", icon: "💼", link: "https://linkedin.com" },
-                  { name: "Twitter", value: "@sabiha_tech", icon: "🐦", link: "https://twitter.com" }
-                ]).map((item, index) => (
+                {contactInfo.map((item, index) => (
                   <motion.a
                     key={index}
                     href={item.link}
@@ -1046,10 +940,10 @@ class AIModel:
                   {item.title}
                 </h3>
                 <p className="text-white/90 font-medium text-lg mb-1 relative z-10">
-                  {(apiData?.contact_section?.availability?.[i]?.value) || item.value}
+                  {item.value}
                 </p>
                 <p className="text-white/50 text-sm relative z-10">
-                  {(apiData?.contact_section?.availability?.[i]?.subtext) || item.subtext}
+                  {item.subtext}
                 </p>
 
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500 to-cyan-500/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
@@ -1063,7 +957,7 @@ class AIModel:
       <footer className="py-8 border-t border-cyan-500/20">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-white/60 terminal-heading">
-            © 2024 {apiData?.hero_section?.name || "Sabiha Malik"}. All rights reserved.
+            © {new Date().getFullYear()} {heroData.name}. All rights reserved.
           </p>
         </div>
       </footer>
